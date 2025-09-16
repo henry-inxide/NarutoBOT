@@ -1,1 +1,7 @@
-
+{
+  "prefix": "!",
+  "owner": "Naruto",
+  "botName": "NarutoBot",
+  "version": "1.0.0",
+  "status": "online"
+}
