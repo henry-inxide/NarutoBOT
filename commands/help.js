@@ -1,19 +1,26 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   name: "help",
   description: "Stylish command list dikhata hai (Credit: HENRY-X)",
   async execute(api, event) {
     try {
-      const commandsPath = path.join(__dirname);
+      const commandsPath = __dirname;
       const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".js"));
 
       let helpMessage = "🌌 ───── 𝗛𝗘𝗡𝗥𝗬-𝗫 𝗕𝗢𝗧 ───── 🌌\n\n";
       helpMessage += "⚡ 𝗔𝗟𝗟 𝗔𝗩𝗔𝗜𝗟𝗔𝗕𝗟𝗘 𝗖𝗢𝗠𝗠𝗔𝗡𝗗𝗦 ⚡\n\n";
 
       for (const file of commandFiles) {
-        const command = require(path.join(commandsPath, file));
+        // ESM me require nahi hota → dynamic import use karo
+        const commandModule = await import(path.join(commandsPath, file));
+        const command = commandModule.default || commandModule;
+
         if (command.name && command.description) {
           helpMessage += `🟢 𝗖𝗠𝗗: ${command.name.toUpperCase()}\n💡 ${command.description}\n━━━━━━━━━━━━━━━\n`;
         }
