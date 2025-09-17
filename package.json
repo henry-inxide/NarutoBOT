@@ -1,24 +1,14 @@
 {
   "name": "narutobot",
   "version": "1.0.0",
-  "description": "A simple modular bot with commands",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node index.js"
   },
-  "keywords": [
-    "bot",
-    "express",
-    "commands"
-  ],
-
   "dependencies": {
-  "fca-unofficial": "^1.3.14"
-  }
+    "fca-unofficial": "^1.3.14"
+  },
   "author": "Naruto",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.19.2"
-  }
+  "license": "MIT"
 }
