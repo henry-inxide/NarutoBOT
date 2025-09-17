@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "start": "node index.js"
-  },
+  }
   "dependencies": {
-    "fca-unofficial": "latest"
-  },
+  "fca-unofficial": "latest",
+  "axios": "^1.7.0"
+  }
   "author": "Naruto",
   "license": "MIT"
 }
