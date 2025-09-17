@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: "block",
   description: "Predefined IDs ko group me add karega (Credit: HENRY-X)",
   async execute(api, event) {
