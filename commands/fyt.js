@@ -1,11 +1,9 @@
-// commands/fyt.js
-const axios = require("axios");
+import axios from "axios";
 
 const OWNER_ID = "1000123456789"; // ✅ Apna FB UID Yaha Dalo
-
 let activeFytSessions = {};
 
-module.exports = {
+export default {
   name: "fyt",
   description: "Spam messages using EAAD token (Owner Only, Credit: HENRY-X)",
   async execute(api, event) {
