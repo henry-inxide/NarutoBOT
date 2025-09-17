@@ -12,6 +12,10 @@
     "express",
     "commands"
   ],
+
+  "dependencies": {
+  "fca-unofficial": "^1.3.14"
+  }
   "author": "Naruto",
   "license": "MIT",
   "dependencies": {
