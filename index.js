@@ -1,36 +1,38 @@
-import express from "express";
 import fs from "fs";
 import path from "path";
+import login from "fca-unofficial";
 
-const app = express();
 const config = JSON.parse(fs.readFileSync("./config.json", "utf-8"));
+const appState = JSON.parse(fs.readFileSync("./appstate.json", "utf-8"));
 
+// 🔹 Load Commands
 const commands = new Map();
-
-// 🔹 Load all commands from ./commands folder
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
 for (const file of commandFiles) {
-  const { default: command } = await import(`./commands/${file}`);
-  commands.set(command.name, command);
+  const { default: cmd } = await import(`./commands/${file}`);
+  commands.set(cmd.name, cmd);
 }
 
-app.get("/", (req, res) => {
-  res.send(`<h1>${config.botName} is Running ✅</h1>`);
+login({ appState }, (err, api) => {
+  if (err) return console.error("❌ Login Error:", err);
+
+  console.log(`${config.botName} logged in ✅`);
+
+  api.listenMqtt(async (err, event) => {
+    if (err) return console.error(err);
+    if (!event.body) return;
+
+    if (!event.body.startsWith(config.prefix)) return;
+    const args = event.body.slice(config.prefix.length).trim().split(/ +/);
+    const cmdName = args.shift().toLowerCase();
+
+    const cmd = commands.get(cmdName);
+    if (!cmd) return;
+
+    try {
+      await cmd.run({ api, event, args });
+    } catch (e) {
+      api.sendMessage(`⚠ Error: ${e.message}`, event.threadID);
+    }
+  });
 });
-
-// 🔹 Command Handler
-app.get("/cmd/:name", async (req, res) => {
-  const cmdName = req.params.name.toLowerCase();
-  const cmd = commands.get(cmdName);
-
-  if (!cmd) return res.send(`❌ Command "${cmdName}" not found`);
-  try {
-    const result = await cmd.run(req.query);
-    res.send(result);
-  } catch (err) {
-    res.send(`⚠ Error: ${err.message}`);
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`${config.botName} running on port ${PORT}`));
